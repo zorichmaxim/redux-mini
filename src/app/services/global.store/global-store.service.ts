@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
-import { UserInterface } from '../../interfaces/UserDataInterface';
+import { UserDataInterface, UserInterface } from '../../interfaces/UserDataInterface';
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { IndexedDB } from "../../decorators/indexedDB/indexedDB.decorator";
 import 'rxjs/Rx';
 
 @Injectable()
 export class GlobalStoreService {
-    public storage : UserInterface;
+    @IndexedDB() public storage : UserInterface;
 
     public storageData = {
-        key: new BehaviorSubject<any>(this.storage)
+        key: new BehaviorSubject<UserInterface>(this.storage)
     };
 
     public changesStore = this.storageData.key.asObservable().distinctUntilChanged();
-/*
-    public getStorage() : UserInterface {
-        return this.storageData.key.value;
+
+    public getCurrentState(id:string) : UserDataInterface {
+        return this.storage[id];
     }
-*/
-    public changeStore(data : UserInterface) : void {
-        Object.keys(this.storageData).forEach(key => this.storageData[key].next(data[key]));
+
+    public changeStore(data : UserInterface, id: string) : void {
+        Object.keys(this.storageData).forEach(key => this.storageData[key].next(data[id]));
+        this.storage = data;
     }
 }

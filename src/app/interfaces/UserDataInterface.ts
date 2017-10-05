@@ -1,5 +1,5 @@
 export interface UserInterface {
-    id: UserDataInterface;
+    [id: string] : UserDataInterface;
 }
 
 export  interface UserDataInterface {
